@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}Teacher Dashboard & Analytics - Online Examination System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    
+    <!-- Dashboard Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary mb-1"><i class="bi bi-speedometer2 me-2"></i>Teacher Analytics Dashboard</h2>
+            <p class="text-muted mb-0">Welcome back, Prof. {{ user.get_full_name|default:user.username }}!</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'exams:create_exam' %}" class="btn btn-primary shadow-sm fw-semibold">
+                <i class="bi bi-plus-circle me-1"></i> Create Exam
+            </a>
+            <a href="{% url 'exams:exam_list' %}" class="btn btn-outline-primary">
+                <i class="bi bi-journal-text me-1"></i> Manage Exams
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Metric Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="card border-0 shadow-sm p-3 bg-dark text-white rounded-4 h-100">
+                <div class="card-body">
+                    <span class="text-uppercase opacity-75 fs-7 fw-bold d-block">Total Exams</span>
+                    <span class="display-5 fw-bold">{{ total_exams }}</span>
+                    <small class="d-block mt-2 opacity-75"><i class="bi bi-check-circle me-1"></i> {{ published_exams }} Published</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card border-0 shadow-sm p-3 bg-secondary text-white rounded-4 h-100">
+                <div class="card-body">
+                    <span class="text-uppercase opacity-75 fs-7 fw-bold d-block">Total Students</span>
+                    <span class="display-5 fw-bold">{{ total_students }}</span>
+                    <small class="d-block mt-2 opacity-75"><i class="bi bi-people me-1"></i> Distinct Test Takers</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card border-0 shadow-sm p-3 bg-dark text-white rounded-4 h-100">
+                <div class="card-body">
+                    <span class="text-uppercase opacity-75 fs-7 fw-bold d-block">Class Average</span>
+                    <span class="display-5 fw-bold">{{ class_avg_score }}%</span>
+                    <small class="d-block mt-2 opacity-75"><i class="bi bi-bar-chart me-1"></i> Across {{ total_attempts }} Attempts</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card border-0 shadow-sm p-3 bg-light text-dark border rounded-4 h-100">
+                <div class="card-body">
+                    <span class="text-uppercase opacity-75 fs-7 fw-bold d-block">Highest / Lowest</span>
+                    <span class="display-6 fw-bold d-block">{{ highest_score }}%</span>
+                    <small class="d-block mt-1 text-muted"><i class="bi bi-arrow-down-circle me-1"></i> Min: {{ lowest_score }}%</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js Performance Section -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-bar-chart-line text-dark me-2"></i>Exam-wise Average Scores (%)</h5>
+                <div style="min-height: 280px;">
+                    <canvas id="examAvgChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100 text-center">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-pie-chart text-dark me-2"></i>Overall Pass vs Fail</h5>
+                <div style="max-width: 250px; margin: 0 auto;">
+                    <canvas id="passFailChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Student Attempts Table -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-clock-history text-dark me-2"></i>Recent Student Submissions</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="px-4">Student</th>
+                        <th>Exam Title</th>
+                        <th class="text-center">Score</th>
+                        <th class="text-center">Percentage</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for att in recent_attempts %}
+                        <tr>
+                            <td class="px-4 fw-bold">{{ att.student.get_full_name|default:att.student.username }}</td>
+                            <td>{{ att.exam.title }}</td>
+                            <td class="text-center">{{ att.obtained_marks }} / {{ att.total_marks }}</td>
+                            <td class="text-center fw-bold">{{ att.percentage }}%</td>
+                            <td class="text-center">
+                                {% if att.status == 'PASSED' %}
+                                    <span class="badge bg-success">PASSED</span>
+                                {% else %}
+                                    <span class="badge bg-danger">FAILED</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <a href="{% url 'attempts:result' att.id %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-eye"></i> View Result
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">No student exam attempts recorded yet.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const examLabels = {{ exam_chart_labels|safe }};
+        const examScores = {{ exam_chart_avg_scores|safe }};
+
+        // Bar Chart - Exam Average Scores
+        const ctxAvg = document.getElementById('examAvgChart').getContext('2d');
+        new Chart(ctxAvg, {
+            type: 'bar',
+            data: {
+                labels: examLabels.length ? examLabels : ['No Exams'],
+                datasets: [{
+                    label: 'Average Score (%)',
+                    data: examScores.length ? examScores : [0],
+                    backgroundColor: 'rgba(13, 110, 253, 0.7)',
+                    borderColor: 'rgba(13, 110, 253, 1)',
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, max: 100 }
+                }
+            }
+        });
+
+        // Doughnut Chart - Pass vs Fail Ratio
+        const passedTotal = {{ exam_chart_passed_count|default:"[]"|safe }}.reduce((a, b) => a + b, 0);
+        const failedTotal = {{ exam_chart_failed_count|default:"[]"|safe }}.reduce((a, b) => a + b, 0);
+
+        const ctxPie = document.getElementById('passFailChart').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'doughnut',
+            data: {
+                labels: ['Passed', 'Failed'],
+                datasets: [{
+                    data: (passedTotal + failedTotal) > 0 ? [passedTotal, failedTotal] : [1, 0],
+                    backgroundColor: ['#198754', '#dc3545']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,234 @@
+:root, [data-bs-theme=light], body {
+    --bs-primary: #111827 !important;
+    --bs-primary-rgb: 17, 24, 39 !important;
+    --bs-primary-bg-subtle: #f1f5f9 !important;
+    --bs-primary-border-subtle: #cbd5e1 !important;
+    --bs-link-color: #111827 !important;
+    --bs-link-hover-color: #374151 !important;
+    --bs-body-bg: #f8fafc !important;
+    --bs-body-color: #1e293b !important;
+    --bs-border-color: #e2e8f0 !important;
+    --bs-secondary: #475569 !important;
+    --bs-secondary-rgb: 71, 85, 105 !important;
+    --bs-dark: #0f172a !important;
+    --bs-dark-rgb: 15, 23, 42 !important;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #f8fafc !important;
+    color: #1e293b !important;
+}
+
+/* Force override navbar */
+.navbar, nav.navbar, .navbar.bg-primary, .navbar.bg-dark {
+    background-color: #0f172a !important;
+    background: #0f172a !important;
+    border-bottom: 1px solid #1e293b !important;
+}
+
+.navbar-dark .navbar-brand {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.navbar-dark .nav-link {
+    color: #cbd5e1 !important;
+    transition: color 0.2s ease;
+}
+
+.navbar-dark .nav-link:hover,
+.navbar-dark .nav-link.active {
+    color: #ffffff !important;
+}
+
+/* Force override Bootstrap 5 Button Variables and Direct Properties */
+.btn-primary, button.btn-primary, a.btn-primary {
+    --bs-btn-color: #ffffff !important;
+    --bs-btn-bg: #111827 !important;
+    --bs-btn-border-color: #111827 !important;
+    --bs-btn-hover-color: #ffffff !important;
+    --bs-btn-hover-bg: #1f2937 !important;
+    --bs-btn-hover-border-color: #1f2937 !important;
+    --bs-btn-focus-shadow-rgb: 17, 24, 39 !important;
+    --bs-btn-active-color: #ffffff !important;
+    --bs-btn-active-bg: #000000 !important;
+    --bs-btn-active-border-color: #000000 !important;
+    background-color: #111827 !important;
+    border-color: #111827 !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:hover, 
+.btn-primary:focus, 
+.btn-primary:active, 
+.btn-primary.active {
+    background-color: #1f2937 !important;
+    border-color: #1f2937 !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-primary, button.btn-outline-primary, a.btn-outline-primary {
+    --bs-btn-color: #111827 !important;
+    --bs-btn-border-color: #111827 !important;
+    --bs-btn-hover-color: #ffffff !important;
+    --bs-btn-hover-bg: #111827 !important;
+    --bs-btn-hover-border-color: #111827 !important;
+    --bs-btn-active-color: #ffffff !important;
+    --bs-btn-active-bg: #111827 !important;
+    --bs-btn-active-border-color: #111827 !important;
+    color: #111827 !important;
+    border-color: #111827 !important;
+    background-color: transparent !important;
+}
+
+.btn-outline-primary:hover, 
+.btn-outline-primary:focus, 
+.btn-outline-primary:active {
+    background-color: #111827 !important;
+    border-color: #111827 !important;
+    color: #ffffff !important;
+}
+
+.btn-secondary {
+    background-color: #475569 !important;
+    border-color: #475569 !important;
+    color: #ffffff !important;
+}
+
+.btn-secondary:hover {
+    background-color: #334155 !important;
+    border-color: #334155 !important;
+}
+
+.btn-outline-secondary {
+    color: #475569 !important;
+    border-color: #94a3b8 !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+}
+
+.btn-light {
+    background-color: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+    color: #0f172a !important;
+}
+
+.btn-light:hover {
+    background-color: #e2e8f0 !important;
+    border-color: #cbd5e1 !important;
+    color: #000000 !important;
+}
+
+/* Force Utility Classes */
+.text-primary {
+    color: #111827 !important;
+}
+
+.bg-primary {
+    background-color: #111827 !important;
+    color: #ffffff !important;
+}
+
+.bg-primary-subtle {
+    background-color: #f1f5f9 !important;
+    color: #111827 !important;
+}
+
+.border-primary {
+    border-color: #111827 !important;
+}
+
+.badge.bg-primary {
+    background-color: #111827 !important;
+    color: #ffffff !important;
+}
+
+.badge.bg-primary-subtle {
+    background-color: #e2e8f0 !important;
+    color: #0f172a !important;
+}
+
+.badge.bg-light.text-primary {
+    background-color: #e2e8f0 !important;
+    color: #0f172a !important;
+}
+
+/* Active pills / tabs */
+.nav-pills .nav-link.active, 
+.nav-pills .show > .nav-link {
+    background-color: #111827 !important;
+    color: #ffffff !important;
+}
+
+/* Cards & Containers */
+.card {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.08) !important;
+}
+
+.card-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.card-header.bg-primary, 
+.card-header.bg-dark {
+    background-color: #0f172a !important;
+    color: #ffffff !important;
+}
+
+/* Input Controls Focus */
+.form-control:focus, 
+.form-select:focus {
+    border-color: #475569 !important;
+    box-shadow: 0 0 0 0.25rem rgba(15, 23, 42, 0.15) !important;
+}
+
+.form-check-input:checked {
+    background-color: #111827 !important;
+    border-color: #111827 !important;
+}
+
+.form-check-input:focus {
+    border-color: #475569 !important;
+    box-shadow: 0 0 0 0.25rem rgba(15, 23, 42, 0.15) !important;
+}
+
+.progress-bar, 
+.progress-bar.bg-primary {
+    background-color: #111827 !important;
+}
+
+/* Links & Dropdowns */
+a {
+    color: #111827;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+a:hover {
+    color: #475569;
+}
+
+.nav-link {
+    text-decoration: none;
+}
+
+.dropdown-item:active, 
+.dropdown-item.active {
+    background-color: #111827 !important;
+    color: #ffffff !important;
+}
+
+.fs-7 {
+    font-size: 0.75rem;
+}

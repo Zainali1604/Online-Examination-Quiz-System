@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ exam.title }} - Exam Details{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-4">
+                <div class="card-header bg-dark text-white p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-light text-dark fw-bold mb-2">
+                            <i class="bi bi-person me-1"></i> Created by Prof. {{ exam.created_by.get_full_name|default:exam.created_by.username }}
+                        </span>
+                        <h2 class="fw-bold mb-0">{{ exam.title }}</h2>
+                    </div>
+                    {% if user.is_teacher %}
+                        <div>
+                            {% if exam.is_published %}
+                                <a href="{% url 'exams:toggle_publish' exam.id %}" class="btn btn-warning btn-sm fw-semibold me-1">
+                                    <i class="bi bi-eye-slash me-1"></i> Unpublish
+                                </a>
+                            {% else %}
+                                <a href="{% url 'exams:toggle_publish' exam.id %}" class="btn btn-success btn-sm fw-semibold me-1">
+                                    <i class="bi bi-send me-1"></i> Publish Exam
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'exams:edit_exam' exam.id %}" class="btn btn-light btn-sm me-1">
+                                <i class="bi bi-pencil me-1"></i> Edit
+                            </a>
+                            <a href="{% url 'exams:delete_exam' exam.id %}" class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-body p-4">
+                    <!-- Key Statistics -->
+                    <div class="row text-center g-3 mb-4">
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light rounded-3 border">
+                                <i class="bi bi-clock display-6 text-dark mb-1"></i>
+                                <span class="d-block text-muted small">Duration</span>
+                                <strong class="fs-5">{{ exam.duration_minutes }} Minutes</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light rounded-3 border">
+                                <i class="bi bi-question-circle display-6 text-dark mb-1"></i>
+                                <span class="d-block text-muted small">Total Questions</span>
+                                <strong class="fs-5">{{ exam.question_count }} Questions</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light rounded-3 border">
+                                <i class="bi bi-award display-6 text-dark mb-1"></i>
+                                <span class="d-block text-muted small">Total Marks</span>
+                                <strong class="fs-5">{{ exam.total_marks }} Marks</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light rounded-3 border">
+                                <i class="bi bi-check2-square display-6 text-dark mb-1"></i>
+                                <span class="d-block text-muted small">Pass Marks</span>
+                                <strong class="fs-5">{{ exam.pass_marks }} Marks</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instructions -->
+                    <h5 class="fw-bold text-dark mb-3"><i class="bi bi-file-earmark-text me-2"></i>Exam Instructions</h5>
+                    <div class="bg-light p-4 rounded-3 mb-4 border">
+                        <p class="mb-0 text-secondary" style="white-space: pre-line;">
+                            {{ exam.description|default:"Please ensure you have a stable internet connection before beginning. Read each question carefully and select your answer. The timer will start immediately upon starting the test." }}
+                        </p>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <a href="{% url 'exams:exam_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Back to Exam List
+                        </a>
+
+                        {% if user.is_student %}
+                            <a href="{% url 'attempts:start_exam' exam.id %}" class="btn btn-success btn-lg px-4 fw-bold shadow-sm">
+                                <i class="bi bi-play-circle-fill me-2"></i> Start Exam Now
+                            </a>
+                        {% elif user.is_teacher %}
+                            <a href="{% url 'exams:question_list' exam.id %}" class="btn btn-primary fw-semibold">
+                                <i class="bi bi-list-task me-1"></i> Manage Questions ({{ exam.question_count }})
+                            </a>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

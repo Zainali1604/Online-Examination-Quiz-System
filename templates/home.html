@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Online Examination System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-7">
+            <h1 class="display-4 fw-bold text-primary mb-3">Online Examination & Quiz System</h1>
+            <p class="lead text-secondary mb-4">
+                A modern, secure, and intuitive platform for college exams. Conduct online multiple-choice quizzes, auto-evaluate results instantly, and track real-time analytics.
+            </p>
+            <div class="d-flex gap-3">
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'accounts:register' %}?role=student" class="btn btn-primary btn-lg shadow-sm">
+                        <i class="bi bi-mortarboard-fill me-2"></i> Join as Student
+                    </a>
+                    <a href="{% url 'accounts:register' %}?role=teacher" class="btn btn-outline-primary btn-lg shadow-sm">
+                        <i class="bi bi-person-badge-fill me-2"></i> Join as Teacher
+                    </a>
+                {% else %}
+                    {% if user.is_teacher %}
+                        <a href="{% url 'dashboard:teacher_dashboard' %}" class="btn btn-primary btn-lg shadow-sm">
+                            <i class="bi bi-speedometer2 me-2"></i> Go to Teacher Dashboard
+                        </a>
+                    {% else %}
+                        <a href="{% url 'dashboard:student_dashboard' %}" class="btn btn-primary btn-lg shadow-sm">
+                            <i class="bi bi-speedometer2 me-2"></i> Go to Student Dashboard
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-5 text-center mt-4 mt-lg-0">
+            <div class="card border-0 shadow-lg p-4 bg-primary text-white rounded-4">
+                <i class="bi bi-journal-check display-1 mb-3"></i>
+                <h3 class="fw-bold">Smart Assessment Platform</h3>
+                <p class="mb-0 opacity-75">Automated scoring, timed exams, detailed review, and instant performance metrics.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Cards -->
+    <div class="row g-4 mt-2">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-3">
+                <div class="card-body">
+                    <div class="text-dark mb-3">
+                        <i class="bi bi-stopwatch fs-1"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Live Countdown Timer</h5>
+                    <p class="card-text text-muted">Exams feature a real-time countdown timer with auto-submit protection when time expires.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-3">
+                <div class="card-body">
+                    <div class="text-dark mb-3">
+                        <i class="bi bi-calculator fs-1"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Automatic Evaluation</h5>
+                    <p class="card-text text-muted">Scores, percentages, and pass/fail statuses are computed backend instantly upon submission.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm p-3">
+                <div class="card-body">
+                    <div class="text-dark mb-3">
+                        <i class="bi bi-bar-chart-line fs-1"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Performance Analytics</h5>
+                    <p class="card-text text-muted">Interactive Chart.js visualizations for teachers to analyze scores and class standings.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

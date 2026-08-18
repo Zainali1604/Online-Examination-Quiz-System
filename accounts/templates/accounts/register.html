@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Online Examination System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-dark text-white text-center py-4">
+                    <i class="bi bi-person-plus display-4"></i>
+                    <h3 class="fw-bold mb-0 mt-2">Create an Account</h3>
+                    <p class="mb-0 opacity-75">Select your role and complete registration</p>
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Role Switch Pills -->
+                    <ul class="nav nav-pills nav-justified mb-4 p-1 bg-light rounded-3" id="roleTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a href="?role=student" class="nav-link {% if role == 'student' %}active bg-dark fw-semibold{% endif %} py-2">
+                                <i class="bi bi-mortarboard me-2"></i> Student Registration
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="?role=teacher" class="nav-link {% if role == 'teacher' %}active bg-dark fw-semibold{% endif %} py-2">
+                                <i class="bi bi-person-badge me-2"></i> Teacher Registration
+                            </a>
+                        </li>
+                    </ul>
+
+                    {% if role == 'teacher' %}
+                        <!-- Teacher Registration Form -->
+                        <form method="POST" action="{% url 'accounts:register' %}?role=teacher" novalidate>
+                            {% csrf_token %}
+                            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-person-circle me-1"></i> Teacher Details</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Username</label>
+                                    {{ teacher_form.username }}
+                                    {% if teacher_form.username.errors %}<div class="text-danger small">{{ teacher_form.username.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Email Address</label>
+                                    {{ teacher_form.email }}
+                                    {% if teacher_form.email.errors %}<div class="text-danger small">{{ teacher_form.email.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">First Name</label>
+                                    {{ teacher_form.first_name }}
+                                    {% if teacher_form.first_name.errors %}<div class="text-danger small">{{ teacher_form.first_name.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Last Name</label>
+                                    {{ teacher_form.last_name }}
+                                    {% if teacher_form.last_name.errors %}<div class="text-danger small">{{ teacher_form.last_name.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Employee ID</label>
+                                    {{ teacher_form.employee_id }}
+                                    {% if teacher_form.employee_id.errors %}<div class="text-danger small">{{ teacher_form.employee_id.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Department</label>
+                                    {{ teacher_form.department }}
+                                    {% if teacher_form.department.errors %}<div class="text-danger small">{{ teacher_form.department.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Qualification</label>
+                                    {{ teacher_form.qualification }}
+                                    {% if teacher_form.qualification.errors %}<div class="text-danger small">{{ teacher_form.qualification.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Phone Number</label>
+                                    {{ teacher_form.phone_number }}
+                                    {% if teacher_form.phone_number.errors %}<div class="text-danger small">{{ teacher_form.phone_number.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Password</label>
+                                    {{ teacher_form.password }}
+                                    {% if teacher_form.password.errors %}<div class="text-danger small">{{ teacher_form.password.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Confirm Password</label>
+                                    {{ teacher_form.confirm_password }}
+                                    {% if teacher_form.confirm_password.errors %}<div class="text-danger small">{{ teacher_form.confirm_password.errors.0 }}</div>{% endif %}
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 mt-4 py-2 fw-semibold shadow-sm">
+                                <i class="bi bi-check-circle me-2"></i> Complete Teacher Registration
+                            </button>
+                        </form>
+
+                    {% else %}
+
+                        <!-- Student Registration Form -->
+                        <form method="POST" action="{% url 'accounts:register' %}?role=student" novalidate>
+                            {% csrf_token %}
+                            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-mortarboard me-1"></i> Student Details</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Username</label>
+                                    {{ student_form.username }}
+                                    {% if student_form.username.errors %}<div class="text-danger small">{{ student_form.username.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Email Address</label>
+                                    {{ student_form.email }}
+                                    {% if student_form.email.errors %}<div class="text-danger small">{{ student_form.email.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">First Name</label>
+                                    {{ student_form.first_name }}
+                                    {% if student_form.first_name.errors %}<div class="text-danger small">{{ student_form.first_name.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Last Name</label>
+                                    {{ student_form.last_name }}
+                                    {% if student_form.last_name.errors %}<div class="text-danger small">{{ student_form.last_name.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Roll Number</label>
+                                    {{ student_form.roll_number }}
+                                    {% if student_form.roll_number.errors %}<div class="text-danger small">{{ student_form.roll_number.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Department</label>
+                                    {{ student_form.department }}
+                                    {% if student_form.department.errors %}<div class="text-danger small">{{ student_form.department.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Phone Number</label>
+                                    {{ student_form.phone_number }}
+                                    {% if student_form.phone_number.errors %}<div class="text-danger small">{{ student_form.phone_number.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Password</label>
+                                    {{ student_form.password }}
+                                    {% if student_form.password.errors %}<div class="text-danger small">{{ student_form.password.errors.0 }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Confirm Password</label>
+                                    {{ student_form.confirm_password }}
+                                    {% if student_form.confirm_password.errors %}<div class="text-danger small">{{ student_form.confirm_password.errors.0 }}</div>{% endif %}
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 mt-4 py-2 fw-semibold shadow-sm">
+                                <i class="bi bi-check-circle me-2"></i> Complete Student Registration
+                            </button>
+                        </form>
+                    {% endif %}
+
+                </div>
+                <div class="card-footer bg-light text-center py-3">
+                    <p class="mb-0 text-muted">Already have an account? <a href="{% url 'accounts:login' %}" class="fw-semibold text-dark">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

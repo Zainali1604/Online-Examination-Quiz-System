@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Performance Analytics - Online Examination System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-1"><i class="bi bi-bar-chart-line me-2"></i>Performance Analytics</h2>
+            <p class="text-muted mb-0">Detailed breakdown of your examination results over time.</p>
+        </div>
+        <a href="{% url 'dashboard:student_dashboard' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-graph-up me-2 text-dark"></i>Score History Line Chart</h5>
+                <div style="min-height: 300px;">
+                    <canvas id="perfLineChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-pie-chart me-2 text-dark"></i>Pass vs Fail Ratio</h5>
+                <div style="max-width: 250px; margin: 0 auto;">
+                    <canvas id="perfPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const labels = {{ labels|safe }};
+        const scores = {{ scores|safe }};
+
+        const ctxLine = document.getElementById('perfLineChart').getContext('2d');
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: labels.length ? labels : ['No Attempts'],
+                datasets: [{
+                    label: 'Score (%)',
+                    data: scores.length ? scores : [0],
+                    borderColor: '#111827',
+                    backgroundColor: 'rgba(17, 24, 39, 0.15)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true, max: 100 } }
+            }
+        });
+
+        const ctxPie = document.getElementById('perfPieChart').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Passed', 'Failed'],
+                datasets: [{
+                    data: [{{ passed_count }}, {{ failed_count }}],
+                    backgroundColor: ['#198754', '#dc3545']
+                }]
+            },
+            options: { responsive: true }
+        });
+    });
+</script>
+{% endblock %}

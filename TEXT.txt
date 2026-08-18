@@ -1,0 +1,7 @@
+teacher 
+username zainalipatel
+password 123456789
+
+student
+username devanshi
+password 987456321

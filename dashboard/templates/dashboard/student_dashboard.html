@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard - Online Examination System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary mb-1"><i class="bi bi-speedometer2 me-2"></i>Student Dashboard</h2>
+            <p class="text-muted mb-0">Welcome back, {{ user.get_full_name|default:user.username }}!</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'exams:exam_list' %}" class="btn btn-primary shadow-sm fw-semibold">
+                <i class="bi bi-play-circle me-1"></i> Take an Exam
+            </a>
+            <a href="{% url 'dashboard:performance' %}" class="btn btn-outline-primary fw-semibold">
+                <i class="bi bi-bar-chart-line me-1"></i> Performance Analytics
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Metrics -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-3 bg-dark text-white rounded-4 h-100">
+                <div class="card-body">
+                    <span class="text-uppercase opacity-75 fs-7 fw-bold d-block">Available Exams</span>
+                    <span class="display-5 fw-bold">{{ available_count }}</span>
+                    <small class="d-block mt-2 opacity-75"><i class="bi bi-journal-text me-1"></i> Ready for attempt</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-3 bg-secondary text-white rounded-4 h-100">
+                <div class="card-body">
+                    <span class="text-uppercase opacity-75 fs-7 fw-bold d-block">Completed Exams</span>
+                    <span class="display-5 fw-bold">{{ completed_count }}</span>
+                    <small class="d-block mt-2 opacity-75"><i class="bi bi-check-circle me-1"></i> Tests submitted</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-3 bg-dark text-white rounded-4 h-100">
+                <div class="card-body">
+                    <span class="text-uppercase opacity-75 fs-7 fw-bold d-block">Average Percentage</span>
+                    <span class="display-5 fw-bold">{{ avg_percentage }}%</span>
+                    <small class="d-block mt-2 opacity-75"><i class="bi bi-award me-1"></i> Overall performance</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Chart and Recent Results -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-graph-up-arrow text-dark me-2"></i>My Progress Trend</h5>
+                <div style="min-height: 250px;">
+                    <canvas id="studentProgressChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold text-dark mb-0"><i class="bi bi-clock-history text-dark me-2"></i>Recent Test Results</h5>
+                    <a href="{% url 'attempts:attempt_history' %}" class="btn btn-link btn-sm p-0 fw-semibold text-decoration-none">View All</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="px-4">Exam</th>
+                                <th class="text-center">Score</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for res in recent_results %}
+                                <tr>
+                                    <td class="px-4 fw-bold">{{ res.exam.title }}</td>
+                                    <td class="text-center">{{ res.percentage }}%</td>
+                                    <td class="text-center">
+                                        {% if res.status == 'PASSED' %}
+                                            <span class="badge bg-success">PASSED</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">FAILED</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'attempts:result' res.id %}" class="btn btn-outline-primary btn-sm">
+                                            Result
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">No completed exam attempts yet.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const labels = {{ chart_labels|safe }};
+        const scores = {{ chart_scores|safe }};
+
+        const ctx = document.getElementById('studentProgressChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels.length ? labels : ['No Attempts'],
+                datasets: [{
+                    label: 'Score Percentage (%)',
+                    data: scores.length ? scores : [0],
+                    borderColor: '#111827',
+                    backgroundColor: 'rgba(17, 24, 39, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, max: 100 }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

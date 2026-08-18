@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Exam Result - {{ exam.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-4">
+                
+                <!-- Result Header Banner -->
+                <div class="card-header p-4 text-center {% if attempt.status == 'PASSED' %}bg-success text-white{% else %}bg-danger text-white{% endif %}">
+                    {% if attempt.status == 'PASSED' %}
+                        <i class="bi bi-trophy display-3 mb-2"></i>
+                        <h2 class="fw-bold mb-1">Congratulations! You Passed!</h2>
+                    {% else %}
+                        <i class="bi bi-x-circle display-3 mb-2"></i>
+                        <h2 class="fw-bold mb-1">Better Luck Next Time!</h2>
+                    {% endif %}
+                    <p class="mb-0 opacity-75">Exam Result Report for {{ exam.title }}</p>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <!-- Score Overview Circle Badge -->
+                    <div class="text-center my-4">
+                        <div class="d-inline-block p-4 rounded-circle border border-5 {% if attempt.status == 'PASSED' %}border-success bg-success-subtle text-success-emphasis{% else %}border-danger bg-danger-subtle text-danger-emphasis{% endif %}">
+                            <span class="display-4 fw-bold d-block">{{ attempt.percentage }}%</span>
+                            <span class="fw-semibold">{{ attempt.obtained_marks }} / {{ attempt.total_marks }} Marks</span>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Table -->
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered align-middle">
+                            <tbody>
+                                <tr>
+                                    <th class="bg-light w-40"><i class="bi bi-person me-2"></i>Student Name</th>
+                                    <td>{{ attempt.student.get_full_name|default:attempt.student.username }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light"><i class="bi bi-journal-text me-2"></i>Exam Name</th>
+                                    <td>{{ exam.title }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light"><i class="bi bi-question-circle me-2"></i>Total Questions</th>
+                                    <td>{{ attempt.total_questions }} Questions</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light"><i class="bi bi-pencil-square me-2"></i>Attempted Questions</th>
+                                    <td>{{ attempt.attempted_questions }} Questions</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light"><i class="bi bi-check-circle text-success me-2"></i>Correct Answers</th>
+                                    <td><strong class="text-success">{{ attempt.correct_answers }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light"><i class="bi bi-x-circle text-danger me-2"></i>Wrong / Unattempted Answers</th>
+                                    <td><strong class="text-danger">{{ attempt.wrong_answers }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light"><i class="bi bi-clock me-2"></i>Submitted At</th>
+                                    <td>{{ attempt.submitted_at|date:"F j, Y, g:i a" }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light"><i class="bi bi-flag me-2"></i>Final Status</th>
+                                    <td>
+                                        {% if attempt.status == 'PASSED' %}
+                                            <span class="badge bg-success px-3 py-2 fs-6">PASSED (Min Pass: {{ exam.pass_marks }})</span>
+                                        {% else %}
+                                            <span class="badge bg-danger px-3 py-2 fs-6">FAILED (Min Pass: {{ exam.pass_marks }})</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between pt-3 border-top">
+                        <a href="{% url 'attempts:attempt_history' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-clock-history me-1"></i> View Attempt History
+                        </a>
+                        <a href="{% url 'attempts:answer_review' attempt.id %}" class="btn btn-primary px-4 fw-bold shadow-sm">
+                            <i class="bi bi-search me-1"></i> Review Answer Details
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

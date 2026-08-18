@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if role == 'teacher' %}Teacher Login{% else %}Student Login{% endif %} - Online Examination System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-dark text-white text-center py-4">
+                    {% if role == 'teacher' %}
+                        <i class="bi bi-person-badge display-4"></i>
+                        <h3 class="fw-bold mb-0 mt-2">Teacher Login</h3>
+                        <p class="mb-0 opacity-75">Sign in to manage exams and student results</p>
+                    {% else %}
+                        <i class="bi bi-mortarboard display-4"></i>
+                        <h3 class="fw-bold mb-0 mt-2">Student Login</h3>
+                        <p class="mb-0 opacity-75">Sign in to take exams and check your scores</p>
+                    {% endif %}
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Role Switch Pills -->
+                    <ul class="nav nav-pills nav-justified mb-4 p-1 bg-light rounded-3" id="loginRoleTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a href="?role=student{% if request.GET.next %}&next={{ request.GET.next }}{% endif %}" 
+                               class="nav-link {% if role != 'teacher' %}active bg-dark fw-semibold{% endif %} py-2">
+                                <i class="bi bi-mortarboard me-2"></i> Student Login
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="?role=teacher{% if request.GET.next %}&next={{ request.GET.next }}{% endif %}" 
+                               class="nav-link {% if role == 'teacher' %}active bg-dark fw-semibold{% endif %} py-2">
+                                <i class="bi bi-person-badge me-2"></i> Teacher Login
+                            </a>
+                        </li>
+                    </ul>
+
+                    <form method="POST" action="{% url 'accounts:login' %}?role={{ role }}{% if request.GET.next %}&next={{ request.GET.next }}{% endif %}" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label fw-medium"><i class="bi bi-person me-1"></i> Username</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_password" class="form-label fw-medium"><i class="bi bi-key me-1"></i> Password</label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                                <div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Log In as {% if role == 'teacher' %}Teacher{% else %}Student{% endif %}
+                        </button>
+                    </form>
+                </div>
+                <div class="card-footer bg-light text-center py-3">
+                    <p class="mb-0 text-muted">
+                        Don't have an account? 
+                        <a href="{% url 'accounts:register' %}?role={{ role }}" class="fw-semibold text-dark">Register here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

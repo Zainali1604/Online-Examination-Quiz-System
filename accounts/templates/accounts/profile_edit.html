@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile - Online Examination System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                <div class="card-header bg-primary text-white p-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-white text-primary p-3 me-3 display-6 fw-bold">
+                            {{ user.username|slice:":1"|upper }}
+                        </div>
+                        <div>
+                            <h3 class="mb-0 fw-bold">Edit Profile</h3>
+                            <p class="mb-0 opacity-75"><i class="bi bi-pencil-square me-1"></i> Update your personal details</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+
+                        <h5 class="fw-bold text-primary mb-3 border-bottom pb-2">Account Details</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium text-muted">Username <span class="badge bg-secondary ms-1 fs-8">Read-only</span></label>
+                                <input type="text" class="form-control bg-light text-muted" value="{{ user.username }}" disabled readonly>
+                                <div class="form-text small opacity-75">Username cannot be changed.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_email" class="form-label fw-medium">Email Address</label>
+                                {{ user_form.email }}
+                                {% if user_form.email.errors %}
+                                    <div class="text-danger small mt-1">{{ user_form.email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_first_name" class="form-label fw-medium">First Name</label>
+                                {{ user_form.first_name }}
+                                {% if user_form.first_name.errors %}
+                                    <div class="text-danger small mt-1">{{ user_form.first_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_last_name" class="form-label fw-medium">Last Name</label>
+                                {{ user_form.last_name }}
+                                {% if user_form.last_name.errors %}
+                                    <div class="text-danger small mt-1">{{ user_form.last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% if profile_form %}
+                            <h5 class="fw-bold text-primary mb-3 border-bottom pb-2">Role Specific Details ({{ user.get_role_display }})</h5>
+                            <div class="row g-3 mb-4">
+                                {% if user.is_student %}
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium text-muted">Roll Number <span class="badge bg-secondary ms-1 fs-8">Read-only</span></label>
+                                        <input type="text" class="form-control bg-light text-muted" value="{{ profile.roll_number }}" disabled readonly>
+                                        <div class="form-text small opacity-75">Roll Number cannot be changed.</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="id_department" class="form-label fw-medium">Department</label>
+                                        {{ profile_form.department }}
+                                        {% if profile_form.department.errors %}
+                                            <div class="text-danger small mt-1">{{ profile_form.department.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label for="id_phone_number" class="form-label fw-medium">Phone Number</label>
+                                        {{ profile_form.phone_number }}
+                                        {% if profile_form.phone_number.errors %}
+                                            <div class="text-danger small mt-1">{{ profile_form.phone_number.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                {% elif user.is_teacher %}
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium text-muted">Employee ID <span class="badge bg-secondary ms-1 fs-8">Read-only</span></label>
+                                        <input type="text" class="form-control bg-light text-muted" value="{{ profile.employee_id }}" disabled readonly>
+                                        <div class="form-text small opacity-75">Employee ID cannot be changed.</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="id_department" class="form-label fw-medium">Department</label>
+                                        {{ profile_form.department }}
+                                        {% if profile_form.department.errors %}
+                                            <div class="text-danger small mt-1">{{ profile_form.department.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="id_qualification" class="form-label fw-medium">Qualification</label>
+                                        {{ profile_form.qualification }}
+                                        {% if profile_form.qualification.errors %}
+                                            <div class="text-danger small mt-1">{{ profile_form.qualification.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="id_phone_number" class="form-label fw-medium">Phone Number</label>
+                                        {{ profile_form.phone_number }}
+                                        {% if profile_form.phone_number.errors %}
+                                            <div class="text-danger small mt-1">{{ profile_form.phone_number.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+                            <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary px-4 fw-semibold">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm">
+                                <i class="bi bi-check-lg me-1"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if is_edit %}Edit Question{% else %}Add Question{% endif %} - {{ exam.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-dark text-white p-4">
+                    <h3 class="fw-bold mb-0">
+                        <i class="bi bi-question-circle me-2"></i>
+                        {% if is_edit %}Edit MCQ Question{% else %}Add MCQ Question{% endif %}
+                    </h3>
+                    <p class="mb-0 opacity-75">Exam: {{ exam.title }}</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Question Statement *</label>
+                            {{ form.question_text }}
+                            {% if form.question_text.errors %}<div class="text-danger small">{{ form.question_text.errors.0 }}</div>{% endif %}
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Marks for Question *</label>
+                                {{ form.marks }}
+                                {% if form.marks.errors %}<div class="text-danger small">{{ form.marks.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Sequence Order *</label>
+                                {{ form.order }}
+                                {% if form.order.errors %}<div class="text-danger small">{{ form.order.errors.0 }}</div>{% endif %}
+                            </div>
+                        </div>
+
+                        <h5 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="bi bi-ui-radios me-2"></i>Enter 4 Options</h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Option A *</label>
+                            {{ form.option_1 }}
+                            {% if form.option_1.errors %}<div class="text-danger small">{{ form.option_1.errors.0 }}</div>{% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Option B *</label>
+                            {{ form.option_2 }}
+                            {% if form.option_2.errors %}<div class="text-danger small">{{ form.option_2.errors.0 }}</div>{% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Option C *</label>
+                            {{ form.option_3 }}
+                            {% if form.option_3.errors %}<div class="text-danger small">{{ form.option_3.errors.0 }}</div>{% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-medium">Option D *</label>
+                            {{ form.option_4 }}
+                            {% if form.option_4.errors %}<div class="text-danger small">{{ form.option_4.errors.0 }}</div>{% endif %}
+                        </div>
+
+                        <div class="mb-4 bg-light p-3 rounded-3 border">
+                            <label class="form-label fw-bold text-success d-block mb-2">
+                                <i class="bi bi-check-circle-fill me-1"></i> Correct Option Selection *
+                            </label>
+                            <div class="d-flex gap-4">
+                                {% for radio in form.correct_option %}
+                                    <div class="form-check">
+                                        {{ radio.tag }}
+                                        <label class="form-check-label fw-semibold" for="{{ radio.id_for_label }}">
+                                            {{ radio.choice_label }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if form.correct_option.errors %}<div class="text-danger small mt-1">{{ form.correct_option.errors.0 }}</div>{% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <a href="{% url 'exams:question_list' exam.id %}" class="btn btn-outline-secondary">Cancel</a>
+                            <div class="d-flex gap-2">
+                                {% if not is_edit %}
+                                    <button type="submit" name="add_another" class="btn btn-outline-primary fw-semibold">
+                                        Save & Add Another
+                                    </button>
+                                {% endif %}
+                                <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm">
+                                    {% if is_edit %}Update Question{% else %}Save Question{% endif %}
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

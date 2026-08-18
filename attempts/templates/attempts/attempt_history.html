@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Attempt History - Online Examination System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-1"><i class="bi bi-clock-history me-2"></i>My Exam History</h2>
+            <p class="text-muted mb-0">Review all your completed examinations and scores.</p>
+        </div>
+    </div>
+
+    {% if attempts %}
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th class="py-3 px-4">Exam Title</th>
+                            <th class="py-3">Date Submitted</th>
+                            <th class="py-3 text-center">Score</th>
+                            <th class="py-3 text-center">Percentage</th>
+                            <th class="py-3 text-center">Status</th>
+                            <th class="py-3 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for att in attempts %}
+                            <tr>
+                                <td class="px-4 fw-bold">{{ att.exam.title }}</td>
+                                <td>{{ att.submitted_at|date:"M d, Y - g:i a" }}</td>
+                                <td class="text-center fw-semibold">{{ att.obtained_marks }} / {{ att.total_marks }}</td>
+                                <td class="text-center fw-bold">{{ att.percentage }}%</td>
+                                <td class="text-center">
+                                    {% if att.status == 'PASSED' %}
+                                        <span class="badge bg-success px-3 py-2">PASSED</span>
+                                    {% else %}
+                                        <span class="badge bg-danger px-3 py-2">FAILED</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <a href="{% url 'attempts:result' att.id %}" class="btn btn-outline-primary btn-sm me-1">
+                                        <i class="bi bi-file-earmark-text me-1"></i> Result
+                                    </a>
+                                    <a href="{% url 'attempts:answer_review' att.id %}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-search me-1"></i> Review
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="card border-0 shadow-sm p-5 text-center text-muted rounded-4">
+            <i class="bi bi-clock-history display-3 mb-3 text-secondary"></i>
+            <h4 class="fw-bold text-dark">No Attempt History</h4>
+            <p class="mb-3">You haven't completed any examinations yet.</p>
+            <div>
+                <a href="{% url 'exams:exam_list' %}" class="btn btn-primary">
+                    <i class="bi bi-journal-text me-1"></i> Browse Available Exams
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

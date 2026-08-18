@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Answer Review - {{ attempt.exam.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-1"><i class="bi bi-search me-2"></i>Detailed Answer Review</h2>
+            <p class="text-muted mb-0">Exam: {{ attempt.exam.title }} | Student: {{ attempt.student.get_full_name|default:attempt.student.username }}</p>
+        </div>
+        <a href="{% url 'attempts:result' attempt.id %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back to Result Summary
+        </a>
+    </div>
+
+    <div class="row g-4">
+        {% for ans in student_answers %}
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden border-start border-5 {% if ans.is_correct %}border-success{% else %}border-danger{% endif %}">
+                    <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+                        <span class="badge bg-dark rounded-pill">Question #{{ forloop.counter }}</span>
+                        <div>
+                            {% if ans.is_correct %}
+                                <span class="badge bg-success px-3 py-2"><i class="bi bi-check-circle me-1"></i> Correct (+{{ ans.marks_obtained }} Marks)</span>
+                            {% else %}
+                                <span class="badge bg-danger px-3 py-2"><i class="bi bi-x-circle me-1"></i> Incorrect (0 Marks)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold text-dark mb-4">{{ ans.question.question_text }}</h5>
+
+                        <div class="vstack gap-2">
+                            {% for opt in ans.question.options.all %}
+                                <div class="p-3 rounded-3 border d-flex justify-content-between align-items-center
+                                    {% if opt.is_correct %}bg-success-subtle border-success text-success-emphasis fw-bold
+                                    {% elif ans.selected_option and ans.selected_option.id == opt.id and not opt.is_correct %}bg-danger-subtle border-danger text-danger-emphasis
+                                    {% else %}bg-light text-secondary{% endif %}">
+                                    
+                                    <div>
+                                        {% if opt.is_correct %}
+                                            <i class="bi bi-check-circle-fill text-success me-2 fs-5"></i>
+                                        {% elif ans.selected_option and ans.selected_option.id == opt.id %}
+                                            <i class="bi bi-x-circle-fill text-danger me-2 fs-5"></i>
+                                        {% else %}
+                                            <i class="bi bi-circle me-2 fs-5"></i>
+                                        {% endif %}
+                                        {{ opt.option_text }}
+                                    </div>
+
+                                    <div>
+                                        {% if opt.is_correct %}
+                                            <span class="badge bg-success">Correct Choice</span>
+                                        {% endif %}
+                                        {% if ans.selected_option and ans.selected_option.id == opt.id %}
+                                            <span class="badge bg-dark">Your Choice</span>
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
